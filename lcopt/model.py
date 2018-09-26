@@ -101,7 +101,7 @@ class LcoptModel(object):
 
     """
 
-    def __init__(self, name=hex(random.getrandbits(128))[2:-1], load=None, useForwast=False, ecoinvent_version=None, ecoinvent_system_model=None, ei_username = None, ei_password = None, write_config=None):
+    def __init__(self, name=hex(random.getrandbits(128))[2:-1], load=None, useForwast=False, ecoinvent_version=None, ecoinvent_system_model=None, ei_username = None, ei_password = None, write_config=None, ei_setup=lcopt_bw2_autosetup, fw_setup=forwast_autosetup):
         super(LcoptModel, self).__init__()
 
         # name the instance
@@ -171,14 +171,14 @@ class LcoptModel(object):
 
             if self.useForwast:
 
-                forwast_autosetup()
+                fw_setup()
 
             else:
 
                 self.base_project_name = storage.single_project_name
 
                 #if bw2_project_exists(self.base_project_name):
-                lcopt_bw2_autosetup(ei_username = ei_username, ei_password = ei_password, write_config=write_config, ecoinvent_version=ecoinvent_version, ecoinvent_system_model = ecoinvent_system_model, overwrite=False)
+                ei_setup(ei_username = ei_username, ei_password = ei_password, write_config=write_config, ecoinvent_version=ecoinvent_version, ecoinvent_system_model = ecoinvent_system_model, overwrite=False)
 
         elif not self.useForwast:
 
@@ -193,10 +193,10 @@ class LcoptModel(object):
                 upgrade_old_default()
             else:
                 print("Lcopt needs to be set up to integrate with brightway2 - this only needs to be done once per version/system model combo")
-                lcopt_bw2_autosetup(ei_username = ei_username, ei_password = ei_password, write_config=write_config, ecoinvent_version=ecoinvent_version, ecoinvent_system_model = ecoinvent_system_model, overwrite=True)
+                ei_setup(ei_username = ei_username, ei_password = ei_password, write_config=write_config, ecoinvent_version=ecoinvent_version, ecoinvent_system_model = ecoinvent_system_model, overwrite=True)
 
         else:
-            forwast_autosetup()
+            fw_setup()
          
         if load is not None:
             self.load(load)
